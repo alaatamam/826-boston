@@ -19,7 +19,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
 export class AnthologyController {
-  constructor(private anthologyService: AnthologyService) {}
+  constructor(private readonly anthologyService: AnthologyService) {}
 
   @Get('/:id')
   async getAnthology(
@@ -34,7 +34,9 @@ export class AnthologyController {
   }
 
   @Delete('/:id')
-  removeAnthology(@Param('id') id: string) {
-    return this.anthologyService.remove(parseInt(id));
+  async removeAnthology(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Anthology> {
+    return this.anthologyService.remove(id);
   }
 }
