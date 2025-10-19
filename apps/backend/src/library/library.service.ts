@@ -74,4 +74,14 @@ export class LibraryService {
     library.anthologies.filter((a) => a !== anthology);
     return this.repo.save(library);
   }
+
+  async getAnthologies(libraryId: number): Promise<Anthology[]> {
+    const library = await this.findOne(libraryId);
+
+    if (!library) {
+      throw new NotFoundException('Library not found');
+    }
+
+    return library.anthologies;
+  }
 }

@@ -10,6 +10,7 @@ import { LibraryService } from './library.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Library } from './library.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Anthology } from '../anthology/anthology.entity';
 
 @ApiTags('Library')
 @ApiBearerAuth()
@@ -23,6 +24,13 @@ export class LibraryController {
     @Param('libraryId', ParseIntPipe) libraryId: number,
   ): Promise<Library> {
     return this.libraryService.findOne(libraryId);
+  }
+
+  @Get('/:libraryId/anthology')
+  async getLibraryAnthologies(
+    @Param('libraryId', ParseIntPipe) libraryId: number,
+  ): Promise<Anthology[]> {
+    return this.libraryService.getAnthologies(libraryId);
   }
 
   @Delete('/:id')
