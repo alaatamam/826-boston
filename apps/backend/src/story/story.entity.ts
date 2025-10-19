@@ -1,4 +1,5 @@
-import { Entity, Column, IntegerType } from 'typeorm';
+import { Entity, Column, IntegerType, ManyToOne, JoinColumn } from 'typeorm';
+import { Anthology } from '../anthology/anthology.entity';
 
 @Entity()
 export class Story {
@@ -23,12 +24,7 @@ export class Story {
   @Column()
   theme?: string;
 
-  @Column()
-  anthology_id?: number;
-
-  /*
   @ManyToOne(() => Anthology)
   @JoinColumn({ name: 'anthology_id' })
   anthology?: Anthology;
-  */
 }

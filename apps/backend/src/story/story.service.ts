@@ -18,6 +18,7 @@ export class StoryService {
     anthology_id?: number,
   ) {
     const storyId = (await this.repo.count()) + 1;
+
     const story = this.repo.create({
       id: storyId,
       title,
@@ -26,7 +27,7 @@ export class StoryService {
       description,
       genre,
       theme,
-      anthology_id,
+      anthology: anthology_id ? { id: anthology_id } : undefined, // ✅ use relation instead of anthology_id
     });
 
     return this.repo.save(story);

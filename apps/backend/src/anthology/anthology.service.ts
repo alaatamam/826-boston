@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Anthology } from './anthology.entity';
+import { Story } from '../story/story.entity';
 import { AnthologyStatus, AnthologyPubLevel } from './types';
 
 @Injectable()
 export class AnthologyService {
   constructor(
     @InjectRepository(Anthology) private repo: Repository<Anthology>,
+    @InjectRepository(Story) private storyRepo: Repository<Story>,
   ) {}
 
   async create(
@@ -119,5 +121,16 @@ export class AnthologyService {
 
     anthology.status = status;
     return this.repo.save(anthology);
+  }
+
+  async getStories(anthologyId: number): Promise<Story[]> {
+    const anthology = await this.repo.findOne({ where: { id: anthologyId } });
+    if (!anthology) {
+      throw new NotFoundException('Anthology not found');
+    }
+
+    return this.storyRepo.find({
+      where: { anthology: { id: anthologyId } },
+    });
   }
 }

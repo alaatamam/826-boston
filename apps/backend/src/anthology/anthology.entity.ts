@@ -1,5 +1,5 @@
-import { Entity, Column, IntegerType } from 'typeorm';
-
+import { Entity, Column, IntegerType, OneToMany } from 'typeorm';
+import { Story } from '../story/story.entity';
 import { AnthologyStatus, AnthologyPubLevel } from './types';
 
 @Entity()
@@ -42,6 +42,9 @@ export class Anthology {
 
   @Column({ nullable: true })
   shopify_url: string;
+
+  @OneToMany(() => Story, (story) => story.anthology)
+  stories?: Story[];
 
   // TODO once Library is implemented
   // @Column()

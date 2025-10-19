@@ -6,6 +6,7 @@ import { Library } from './library.entity';
 import { Anthology } from '../anthology/anthology.entity';
 import { AnthologyService } from '../anthology/anthology.service';
 import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
+import { Story } from '../story/story.entity';
 
 @Injectable()
 export class LibraryService {
@@ -88,6 +89,10 @@ export class LibraryService {
     }
 
     return library.anthologies;
+  }
+
+  async getAnthologyStories(anthologyId: number): Promise<Story[]> {
+    return this.anthologyService.getStories(anthologyId);
   }
 
   async createAnthology(
