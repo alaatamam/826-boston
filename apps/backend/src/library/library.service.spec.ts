@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { Library } from './library.entity';
 import { Anthology } from '../anthology/anthology.entity';
 import { AnthologyStatus, AnthologyPubLevel } from '../anthology/types';
+import { AnthologyService } from '../anthology/anthology.service';
+import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
 
 describe('LibraryService', () => {
   let service: LibraryService;
-  let repository: Repository<Library>;
 
   const mockAnthology: Anthology = {
     id: 1,
@@ -41,6 +41,10 @@ describe('LibraryService', () => {
     remove: jest.fn(),
   };
 
+  const mockAnthologyService = {
+    create: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -49,11 +53,14 @@ describe('LibraryService', () => {
           provide: getRepositoryToken(Library),
           useValue: mockRepository,
         },
+        {
+          provide: AnthologyService,
+          useValue: mockAnthologyService,
+        },
       ],
     }).compile();
 
     service = module.get<LibraryService>(LibraryService);
-    repository = module.get<Repository<Library>>(getRepositoryToken(Library));
   });
 
   afterEach(() => {
@@ -169,6 +176,112 @@ describe('LibraryService', () => {
         anthologies,
       });
       expect(mockRepository.save).toHaveBeenCalledWith(newLibrary);
+    });
+  });
+
+  describe('createAnthology', () => {
+    const createAnthologyDto: CreateAnthologyDto = {
+      title: 'New Test Anthology',
+      description: 'A newly created test anthology',
+      published_year: 2024,
+      status: AnthologyStatus.DRAFTING,
+      pub_level: AnthologyPubLevel.ZINE,
+      programs: ['New Program'],
+      inventory: 50,
+      photo_url: 'https://example.com/new-photo.jpg',
+      genre: 'Mystery',
+      theme: 'Suspense',
+      isbn: '9876543210',
+      shopify_url: 'https://shopify.com/new-test',
+    };
+
+    it('should create an anthology and add it to library', async () => {
+      const newAnthology = {
+        ...mockAnthology,
+        id: 2,
+        title: 'New Test Anthology',
+      };
+      const updatedLibrary = {
+        ...mockLibrary,
+        anthologies: [...mockLibrary.anthologies, newAnthology],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue(mockLibrary);
+      mockAnthologyService.create.mockResolvedValue(newAnthology);
+      mockRepository.save.mockResolvedValue(updatedLibrary);
+
+      const result = await service.createAnthology(1, createAnthologyDto);
+
+      expect(result).toEqual(newAnthology);
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(mockAnthologyService.create).toHaveBeenCalledWith(
+        createAnthologyDto.title,
+        createAnthologyDto.description,
+        createAnthologyDto.published_year,
+        createAnthologyDto.status,
+        createAnthologyDto.pub_level,
+        createAnthologyDto.programs,
+        createAnthologyDto.inventory,
+        createAnthologyDto.photo_url,
+        createAnthologyDto.genre,
+        createAnthologyDto.theme,
+        createAnthologyDto.isbn,
+        createAnthologyDto.shopify_url,
+      );
+      expect(mockRepository.save).toHaveBeenCalledWith(updatedLibrary);
+    });
+
+    it('should throw NotFoundException when library does not exist', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(
+        service.createAnthology(999, createAnthologyDto),
+      ).rejects.toThrow(new NotFoundException('Library not found'));
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 999 });
+      expect(mockAnthologyService.create).not.toHaveBeenCalled();
+      expect(mockRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should create anthology with minimal required fields', async () => {
+      const minimalDto: CreateAnthologyDto = {
+        title: 'Minimal Anthology',
+        description: 'Minimal description',
+        published_year: 2024,
+        status: AnthologyStatus.NOT_STARTED,
+        pub_level: AnthologyPubLevel.CHAPBOOK,
+      };
+
+      const newAnthology = {
+        ...mockAnthology,
+        id: 3,
+        title: 'Minimal Anthology',
+      };
+      const updatedLibrary = {
+        ...mockLibrary,
+        anthologies: [...mockLibrary.anthologies, newAnthology],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue(mockLibrary);
+      mockAnthologyService.create.mockResolvedValue(newAnthology);
+      mockRepository.save.mockResolvedValue(updatedLibrary);
+
+      const result = await service.createAnthology(1, minimalDto);
+
+      expect(result).toEqual(newAnthology);
+      expect(mockAnthologyService.create).toHaveBeenCalledWith(
+        minimalDto.title,
+        minimalDto.description,
+        minimalDto.published_year,
+        minimalDto.status,
+        minimalDto.pub_level,
+        undefined, // programs
+        undefined, // inventory
+        undefined, // photo_url
+        undefined, // genre
+        undefined, // theme
+        undefined, // isbn
+        undefined, // shopify_url
+      );
     });
   });
 

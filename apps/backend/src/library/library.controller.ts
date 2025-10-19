@@ -4,13 +4,23 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Post,
+  Body,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Library } from './library.entity';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Anthology } from '../anthology/anthology.entity';
+import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
 
 @ApiTags('Library')
 @ApiBearerAuth()
@@ -31,6 +41,25 @@ export class LibraryController {
     @Param('libraryId', ParseIntPipe) libraryId: number,
   ): Promise<Anthology[]> {
     return this.libraryService.getAnthologies(libraryId);
+  }
+
+  @Post('/:libraryId/anthology')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new anthology in a library' })
+  @ApiResponse({
+    status: 201,
+    description: 'Anthology created successfully',
+    type: Anthology,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Library not found',
+  })
+  async createAnthology(
+    @Param('libraryId', ParseIntPipe) libraryId: number,
+    @Body() createAnthologyDto: CreateAnthologyDto,
+  ): Promise<Anthology> {
+    return this.libraryService.createAnthology(libraryId, createAnthologyDto);
   }
 
   @Delete('/:id')

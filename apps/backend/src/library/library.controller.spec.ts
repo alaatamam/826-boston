@@ -5,6 +5,7 @@ import { LibraryService } from './library.service';
 import { Library } from './library.entity';
 import { Anthology } from '../anthology/anthology.entity';
 import { AnthologyStatus, AnthologyPubLevel } from '../anthology/types';
+import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
 
 describe('LibraryController', () => {
   let controller: LibraryController;
@@ -34,6 +35,7 @@ describe('LibraryController', () => {
     findOne: jest.fn(),
     getAnthologies: jest.fn(),
     remove: jest.fn(),
+    createAnthology: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -130,6 +132,79 @@ describe('LibraryController', () => {
       expect(result).toEqual(multipleAnthologies);
       expect(result).toHaveLength(3);
       expect(mockLibraryService.getAnthologies).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('createAnthology', () => {
+    const createAnthologyDto: CreateAnthologyDto = {
+      title: 'New Test Anthology',
+      description: 'A newly created test anthology',
+      published_year: 2024,
+      status: AnthologyStatus.DRAFTING,
+      pub_level: AnthologyPubLevel.ZINE,
+      programs: ['New Program'],
+      inventory: 50,
+      photo_url: 'https://example.com/new-photo.jpg',
+      genre: 'Mystery',
+      theme: 'Suspense',
+      isbn: '9876543210',
+      shopify_url: 'https://shopify.com/new-test',
+    };
+
+    it('should create an anthology successfully', async () => {
+      const newAnthology = {
+        ...mockAnthology,
+        id: 2,
+        title: 'New Test Anthology',
+      };
+      mockLibraryService.createAnthology.mockResolvedValue(newAnthology);
+
+      const result = await controller.createAnthology(1, createAnthologyDto);
+
+      expect(result).toEqual(newAnthology);
+      expect(mockLibraryService.createAnthology).toHaveBeenCalledWith(
+        1,
+        createAnthologyDto,
+      );
+    });
+
+    it('should throw NotFoundException when library does not exist', async () => {
+      mockLibraryService.createAnthology.mockRejectedValue(
+        new NotFoundException('Library not found'),
+      );
+
+      await expect(
+        controller.createAnthology(999, createAnthologyDto),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockLibraryService.createAnthology).toHaveBeenCalledWith(
+        999,
+        createAnthologyDto,
+      );
+    });
+
+    it('should create anthology with minimal required fields', async () => {
+      const minimalDto: CreateAnthologyDto = {
+        title: 'Minimal Anthology',
+        description: 'Minimal description',
+        published_year: 2024,
+        status: AnthologyStatus.NOT_STARTED,
+        pub_level: AnthologyPubLevel.CHAPBOOK,
+      };
+
+      const newAnthology = {
+        ...mockAnthology,
+        id: 3,
+        title: 'Minimal Anthology',
+      };
+      mockLibraryService.createAnthology.mockResolvedValue(newAnthology);
+
+      const result = await controller.createAnthology(1, minimalDto);
+
+      expect(result).toEqual(newAnthology);
+      expect(mockLibraryService.createAnthology).toHaveBeenCalledWith(
+        1,
+        minimalDto,
+      );
     });
   });
 

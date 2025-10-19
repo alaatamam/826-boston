@@ -4,10 +4,15 @@ import { Repository } from 'typeorm';
 
 import { Library } from './library.entity';
 import { Anthology } from '../anthology/anthology.entity';
+import { AnthologyService } from '../anthology/anthology.service';
+import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
 
 @Injectable()
 export class LibraryService {
-  constructor(@InjectRepository(Library) private repo: Repository<Library>) {}
+  constructor(
+    @InjectRepository(Library) private repo: Repository<Library>,
+    private anthologyService: AnthologyService,
+  ) {}
 
   async create(anthologies: Anthology[]) {
     const libraryId = (await this.repo.count()) + 1;
@@ -83,5 +88,38 @@ export class LibraryService {
     }
 
     return library.anthologies;
+  }
+
+  async createAnthology(
+    libraryId: number,
+    createAnthologyDto: CreateAnthologyDto,
+  ): Promise<Anthology> {
+    const library = await this.findOne(libraryId);
+
+    if (!library) {
+      throw new NotFoundException('Library not found');
+    }
+
+    // Create the anthology using the AnthologyService
+    const anthology = await this.anthologyService.create(
+      createAnthologyDto.title,
+      createAnthologyDto.description,
+      createAnthologyDto.published_year,
+      createAnthologyDto.status,
+      createAnthologyDto.pub_level,
+      createAnthologyDto.programs,
+      createAnthologyDto.inventory,
+      createAnthologyDto.photo_url,
+      createAnthologyDto.genre,
+      createAnthologyDto.theme,
+      createAnthologyDto.isbn,
+      createAnthologyDto.shopify_url,
+    );
+
+    // Add the anthology to the library
+    library.anthologies.push(anthology);
+    await this.repo.save(library);
+
+    return anthology;
   }
 }
