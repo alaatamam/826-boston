@@ -36,6 +36,7 @@ describe('LibraryController', () => {
     getAnthologies: jest.fn(),
     remove: jest.fn(),
     createAnthology: jest.fn(),
+    updateAnthology: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -204,6 +205,115 @@ describe('LibraryController', () => {
       expect(mockLibraryService.createAnthology).toHaveBeenCalledWith(
         1,
         minimalDto,
+      );
+    });
+  });
+
+  describe('updateAnthology', () => {
+    it('should update an anthology successfully', async () => {
+      const updateDto = {
+        title: 'Updated Title',
+        description: 'Updated description',
+      };
+
+      const updatedAnthology = {
+        ...mockAnthology,
+        title: 'Updated Title',
+        description: 'Updated description',
+      };
+
+      mockLibraryService.updateAnthology.mockResolvedValue(updatedAnthology);
+
+      const result = await controller.updateAnthology(1, updateDto);
+
+      expect(result).toEqual(updatedAnthology);
+      expect(mockLibraryService.updateAnthology).toHaveBeenCalledWith(
+        1,
+        updateDto,
+      );
+    });
+
+    it('should throw NotFoundException when anthology does not exist', async () => {
+      const updateDto = {
+        title: 'Updated Title',
+      };
+
+      mockLibraryService.updateAnthology.mockRejectedValue(
+        new NotFoundException('Anthology not found'),
+      );
+
+      await expect(controller.updateAnthology(999, updateDto)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockLibraryService.updateAnthology).toHaveBeenCalledWith(
+        999,
+        updateDto,
+      );
+    });
+
+    it('should update anthology with partial data', async () => {
+      const updateDto = {
+        inventory: 150,
+      };
+
+      const updatedAnthology = {
+        ...mockAnthology,
+        inventory: 150,
+      };
+
+      mockLibraryService.updateAnthology.mockResolvedValue(updatedAnthology);
+
+      const result = await controller.updateAnthology(1, updateDto);
+
+      expect(result).toEqual(updatedAnthology);
+      expect(mockLibraryService.updateAnthology).toHaveBeenCalledWith(
+        1,
+        updateDto,
+      );
+    });
+
+    it('should update anthology status', async () => {
+      const updateDto = {
+        status: AnthologyStatus.ARCHIVED,
+      };
+
+      const updatedAnthology = {
+        ...mockAnthology,
+        status: AnthologyStatus.ARCHIVED,
+      };
+
+      mockLibraryService.updateAnthology.mockResolvedValue(updatedAnthology);
+
+      const result = await controller.updateAnthology(1, updateDto);
+
+      expect(result).toEqual(updatedAnthology);
+      expect(mockLibraryService.updateAnthology).toHaveBeenCalledWith(
+        1,
+        updateDto,
+      );
+    });
+
+    it('should update multiple fields at once', async () => {
+      const updateDto = {
+        title: 'Brand New Title',
+        inventory: 200,
+        status: AnthologyStatus.CAN_BE_SHARED,
+        shopify_url: 'https://shopify.com/updated',
+      };
+
+      const updatedAnthology = {
+        ...mockAnthology,
+        ...updateDto,
+      };
+
+      mockLibraryService.updateAnthology.mockResolvedValue(updatedAnthology);
+
+      const result = await controller.updateAnthology(1, updateDto);
+
+      expect(result).toEqual(updatedAnthology);
+      expect(mockLibraryService.updateAnthology).toHaveBeenCalledWith(
+        1,
+        updateDto,
       );
     });
   });

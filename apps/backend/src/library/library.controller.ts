@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Body,
   UseGuards,
   HttpCode,
@@ -21,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { Anthology } from '../anthology/anthology.entity';
 import { CreateAnthologyDto } from '../anthology/dtos/create-anthology.dto';
+import { UpdateAnthologyDto } from '../anthology/dtos/update-anthology.dto';
 
 @ApiTags('Library')
 @ApiBearerAuth()
@@ -60,6 +62,24 @@ export class LibraryController {
     @Body() createAnthologyDto: CreateAnthologyDto,
   ): Promise<Anthology> {
     return this.libraryService.createAnthology(libraryId, createAnthologyDto);
+  }
+
+  @Put('/anthology/:anthologyId')
+  @ApiOperation({ summary: 'Update an anthology with the given id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Anthology updated successfully',
+    type: Anthology,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Anthology not found',
+  })
+  async updateAnthology(
+    @Param('anthologyId', ParseIntPipe) anthologyId: number,
+    @Body() updateAnthologyDto: UpdateAnthologyDto,
+  ): Promise<Anthology> {
+    return this.libraryService.updateAnthology(anthologyId, updateAnthologyDto);
   }
 
   @Delete('/:id')
