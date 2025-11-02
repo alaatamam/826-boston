@@ -3,34 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Story } from './story.entity';
+import { AnthologyService } from '../anthology/anthology.service';
 
 @Injectable()
 export class StoryService {
-  constructor(@InjectRepository(Story) private repo: Repository<Story>) {}
-
-  async create(
-    title: string,
-    author: string,
-    student_bio?: string,
-    description?: string,
-    genre?: string,
-    theme?: string,
-    anthology_id?: number,
-  ) {
-    const storyId = (await this.repo.count()) + 1;
-    const story = this.repo.create({
-      id: storyId,
-      title,
-      author,
-      student_bio,
-      description,
-      genre,
-      theme,
-      anthology_id,
-    });
-
-    return this.repo.save(story);
-  }
+  constructor(
+    @InjectRepository(Story) private repo: Repository<Story>,
+    private anthologyService: AnthologyService,
+  ) {}
 
   findOne(id: number) {
     if (!id) {
@@ -76,5 +56,31 @@ export class StoryService {
     }
 
     return this.repo.remove(story);
+  }
+
+  async createStory(
+    title: string,
+    author: string,
+    student_bio?: string,
+    description?: string,
+    genre?: string,
+    theme?: string,
+    anthology_id?: number,
+  ): Promise<Story> {
+    const storyId = (await this.repo.count()) + 1;
+    const story = this.repo.create({
+      id: storyId,
+      title,
+      author,
+      student_bio,
+      description,
+      genre,
+      theme,
+      anthology_id,
+    });
+
+    await this.repo.save(story);
+
+    return story;
   }
 }
