@@ -122,4 +122,11 @@ export class LibraryService {
 
     return anthology;
   }
+
+  async updateAnthology(
+    anthologyId: number,
+    attrs: Partial<Anthology>,
+  ): Promise<Anthology> {
+    return this.anthologyService.update(anthologyId, attrs);
+  }
 }
