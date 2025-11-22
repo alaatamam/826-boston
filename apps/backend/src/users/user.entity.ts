@@ -1,4 +1,4 @@
-import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 import type { Status } from './types';
 
@@ -18,4 +18,7 @@ export class User {
 
   @Column()
   email: string;
+
+  @Column({ nullable: true })
+  publishingName?: string;
 }
