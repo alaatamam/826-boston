@@ -5,12 +5,19 @@ import apiClient from '@api/apiClient';
 import Root from '@containers/root';
 import NotFound from '@containers/404';
 import Test from '@containers/test';
+import ArchivedPublications from '@containers/archived-publications';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
     errorElement: <NotFound />,
+    children: [
+      {
+        path: 'library/publication/archived',
+        element: <ArchivedPublications />,
+      },
+    ],
   },
   {
     path: '/test',
