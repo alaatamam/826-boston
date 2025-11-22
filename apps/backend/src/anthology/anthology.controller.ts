@@ -33,10 +33,11 @@ export class AnthologyController {
     return this.anthologyService.findAll();
   }
 
-  @Delete('/:id')
+  @Delete('/:anthologyId')
   async removeAnthology(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Anthology> {
-    return this.anthologyService.remove(id);
+    @Param('anthologyId', ParseIntPipe) anthologyId: number,
+  ): Promise<{ message: string }> {
+    await this.anthologyService.remove(anthologyId);
+    return { message: 'Anthology deleted successfully' };
   }
 }
