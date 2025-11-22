@@ -7,7 +7,7 @@ interface Anthology {
   published_year: number;
   status: string;
   updated_at?: string;
-  authors?: string[]; // for search by author(s)
+  authors?: string[];
 }
 
 // Static fallback data to satisfy "leave static for now"
@@ -61,21 +61,20 @@ export default function ArchivedPublications() {
         }
       })
       .catch(() => {
-        // If backend fails, keep STATIC_ARCHIVED
+        // leave STATIC_ARCHIVED if backend not available
         setArchived(STATIC_ARCHIVED);
       });
   }, []);
 
-  // Case-insensitive search over title + authors
+  // Case-insensitive title + author filtering
   const filteredArchived = archived.filter((pub) => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return true;
 
     const titleMatch = pub.title.toLowerCase().includes(q);
+
     const authors = pub.authors || [];
-    const authorMatch = authors.some((author) =>
-      author.toLowerCase().includes(q),
-    );
+    const authorMatch = authors.some((a) => a.toLowerCase().includes(q));
 
     return titleMatch || authorMatch;
   });
@@ -120,9 +119,15 @@ export default function ArchivedPublications() {
 
               <div className="archive-card-footer">
                 <div className="archive-card-footer-text">
-                  <div className="archive-card-title">
-                    {pub.title || 'Title'}
+                  <div className="archive-card-title">{pub.title}</div>
+
+                  {/* NEW: Authors / byline on card */}
+                  <div className="archive-card-authors">
+                    {pub.authors && pub.authors.length > 0
+                      ? pub.authors.join(', ')
+                      : 'Byline coming soon'}
                   </div>
+
                   <div className="archive-card-meta">
                     Last modified{' '}
                     {pub.updated_at
@@ -130,6 +135,7 @@ export default function ArchivedPublications() {
                       : MOCK_LAST_MODIFIED}
                   </div>
                 </div>
+
                 <span className="archive-card-menu">•••</span>
               </div>
             </button>
@@ -137,7 +143,7 @@ export default function ArchivedPublications() {
         )}
       </div>
 
-      {/* Interaction pop-up modal */}
+      {/* Modal pop-up */}
       {selected && (
         <div
           className="archive-modal-backdrop"
@@ -150,18 +156,20 @@ export default function ArchivedPublications() {
               <p>
                 <strong>Year:</strong> {selected.published_year ?? '—'}
               </p>
+
               <p>
                 <strong>Status:</strong> {selected.status}
               </p>
+
               {selected.authors && selected.authors.length > 0 && (
                 <p>
                   <strong>Author(s):</strong> {selected.authors.join(', ')}
                 </p>
               )}
+
               <p>
                 This is a placeholder pop-up interaction to satisfy the
-                acceptance criteria. Additional details and actions will be
-                added in future tickets.
+                acceptance criteria. More details will be added later.
               </p>
             </div>
 
