@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import apiClient from '../../../api/apiClient';
+import { Anthology, AnthologyStatus, AnthologyPubLevel } from '../../../types';
 import './publication-view.css';
 
-// Image URLs from Figma (valid for 7 days)
-const imgFrame69 =
-  'https://www.figma.com/api/mcp/asset/27db9716-ebe4-4d05-9381-9d4ba2775e07';
-const imgFluentIosArrow24Filled =
-  'https://www.figma.com/api/mcp/asset/9dd37d35-ce13-43de-805f-35b5b07db7b2';
-const imgVector3 =
-  'https://www.figma.com/api/mcp/asset/4ca5ccfb-1405-4fd9-b3c9-d042e992c842';
-const imgOuiPopout =
-  'https://www.figma.com/api/mcp/asset/1d347115-ddef-48af-a9c8-1630ca868276';
-const imgFluentMdl2SortUp =
-  'https://www.figma.com/api/mcp/asset/9ab3c931-ce49-467c-8fa5-db208f8a8f7c';
-const imgVector4 =
-  'https://www.figma.com/api/mcp/asset/534605ee-2c35-48c7-a5a6-0cdf0c2abfbf';
+import imgFrame69 from '../../../assets/images/frame-69.png';
+import imgFluentIosArrow24Filled from '../../../assets/images/fluent-ios-arrow-24-filled.svg';
+import imgVector3 from '../../../assets/images/vector-3.svg';
+import imgOuiPopout from '../../../assets/images/oui-popout.svg';
+import imgFluentMdl2SortUp from '../../../assets/images/fluent-mdl2-sort-up.svg';
+import imgVector4 from '../../../assets/images/vector-4.svg';
 
 type TabType = 'publications' | 'assets' | 'production-details' | 'inventory';
 
@@ -155,75 +151,142 @@ const MetadataRowSingle: React.FC<MetadataRowSingleProps> = ({
 );
 
 // --- Data ---
-
-const publicationDetails = [
-  {
-    label: 'Subtitle',
-    value:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  },
-  {
-    label: 'Byline',
-    value:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  },
-  {
-    label: 'Theme',
-    value:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  },
-  {
-    label: 'Praise/Pull Quotes',
-    value:
-      '"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."',
-  },
-];
-
-const productionDetails = [
-  { label: 'Foreword Author', value: 'Agnes Ugoji' },
-  { label: 'Age Category', value: 'Empty' },
-  { label: 'Pub Level', value: 'Level 2' },
-  { label: 'Pub Date', value: 'June 30, 2025' },
-  { label: 'ISBN', value: '979-8-88694-087-9' },
-  { label: 'Dimensions', value: '7" x 7"' },
-  { label: 'Binding Type', value: 'Perfect Bound' },
-  { label: 'Page Count', value: '132' },
-  { label: 'Print Run', value: '500' },
-  { label: 'Printed By', value: 'Marquis' },
-  { label: 'Number of Students', value: '53' },
-  { label: 'Printing Cost', value: '$2,906.40' },
-  { label: 'Weight', value: '6.2 oz / 176 g' },
-];
-
-const inventoryItems = [
-  { label: 'Devs/Comms Office (1865 Columbus)', value: '79' },
-  { label: 'The Hub (1989 Columbus)', value: '400' },
-  { label: 'Tutoring Center (3035 Office)', value: 'Empty' },
-  { label: 'Archived', value: '3' },
-  { label: "Holland Writers' Room Library", value: 'Empty' },
-  { label: "New Missions Writers' Room", value: 'Empty' },
-  { label: "BINcA Writers' Room", value: 'Empty' },
-  { label: "O'Bryant Writers' Room", value: 'Empty' },
-  { label: "BTU Writers' Room", value: 'Empty' },
-  { label: "Muñiz Writers' Room", value: 'Empty' },
-];
-
+// Assets hardcoded for now as backend doesn't provide them yet
 const assets = [
   { name: 'name_of_file', type: 'PDF', size: '6.2 MB' },
   { name: 'name_of_file', type: 'PDF', size: '6.2 MB' },
   { name: 'name_of_file', type: 'PDF', size: '6.2 MB' },
 ];
 
+const mockAnthology: Anthology = {
+  id: 0,
+  title: 'Untitled Publication (Mock)',
+  description:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  published_year: 2025,
+  programs: 'YLAB',
+  inventory: 79,
+  status: AnthologyStatus.CAN_BE_SHARED,
+  pub_level: AnthologyPubLevel.PERFECT_BOUND,
+  photo_url: undefined,
+  genre: 'Fantasy, Science Fiction, Mystery',
+  theme: 'Short Stories, Creative Writing',
+  isbn: '979-8-88694-087-9',
+  shopify_url: 'https://example.com',
+};
+
 const PublicationView: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<TabType>('publications');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [anthology, setAnthology] = useState<Anthology | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const fullDescription =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      apiClient
+        .getAnthology(id)
+        .then((data) => {
+          if (data) {
+            setAnthology(data);
+          } else {
+            // Fallback to mock if ID exists but no data returned (unlikely with current API structure but safe)
+            setAnthology(mockAnthology);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          // Fallback to mock on error for demo purposes
+          console.log('Using mock anthology due to API error');
+          setAnthology(mockAnthology);
+          setLoading(false);
+        });
+    } else {
+      // Fallback for development if no ID is present
+      console.log('Using mock anthology (no ID)');
+      setAnthology(mockAnthology);
+      setLoading(false);
+    }
+  }, [id]);
 
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
+
+  if (loading) return <div className="publication-view">Loading...</div>;
+  if (!anthology) return <div className="publication-view">No anthology found</div>;
+
+  const fullDescription = anthology.description || 'No description available.';
+
+  // Helper to parse comma separated strings or arrays
+  const parseTags = (value?: string | string[]) => {
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') return value.split(',').map(s => s.trim());
+      return [];
+  };
+
+  const getTagClass = (label: string) => {
+    switch (label) {
+      case 'Fantasy':
+        return 'tag-fantasy';
+      case 'Science Fiction':
+        return 'tag-science-fiction';
+      case 'Mystery':
+        return 'tag-mystery';
+      default:
+        return 'tag-neutral';
+    }
+  };
+
+  const genreTags = parseTags(anthology.genre).map(g => ({ label: g, className: getTagClass(g) }));
+  const themeTags = parseTags(anthology.theme).map(t => ({ label: t, className: 'tag-neutral' }));
+  const programValue = Array.isArray(anthology.programs) ? anthology.programs.join(', ') : anthology.programs || 'Empty';
+
+  const publicationDetails = [
+    {
+      label: 'Subtitle',
+      value: 'Empty', // Not in anthology entity
+    },
+    {
+      label: 'Byline',
+      value: 'Empty', // Not in anthology entity
+    },
+    {
+      label: 'Theme',
+      value: anthology.theme || 'Empty',
+    },
+    {
+      label: 'Praise/Pull Quotes',
+      value: 'Empty', // Not in anthology entity
+    },
+  ];
+
+  const productionDetails = [
+    { label: 'Foreword Author', value: 'Empty' },
+    { label: 'Age Category', value: 'Empty' },
+    { label: 'Pub Level', value: anthology.pub_level || 'Empty' },
+    { label: 'Pub Date', value: anthology.published_year?.toString() || 'Empty' },
+    { label: 'ISBN', value: anthology.isbn || 'Empty' },
+    { label: 'Dimensions', value: 'Empty' },
+    { label: 'Binding Type', value: 'Empty' },
+    { label: 'Page Count', value: 'Empty' },
+    { label: 'Print Run', value: 'Empty' },
+    { label: 'Printed By', value: 'Empty' },
+    { label: 'Number of Students', value: 'Empty' },
+    { label: 'Printing Cost', value: 'Empty' },
+    { label: 'Weight', value: 'Empty' },
+  ];
+
+  const inventoryItems = [
+    { label: 'Total Inventory', value: anthology.inventory?.toString() || '0' },
+    // Placeholders for locations not yet in backend
+    { label: 'Devs/Comms Office (1865 Columbus)', value: 'Empty' },
+    { label: 'The Hub (1989 Columbus)', value: 'Empty' },
+    { label: 'Tutoring Center (3035 Office)', value: 'Empty' },
+    { label: 'Archived', value: 'Empty' },
+  ];
 
   return (
     <div className="publication-view">
@@ -235,7 +298,7 @@ const PublicationView: React.FC = () => {
         <div className="breadcrumb-separator">
           <img src={imgVector3} alt="" />
         </div>
-        <p className="breadcrumb-current">Untitled Publication</p>
+        <p className="breadcrumb-current">{anthology.title}</p>
       </div>
 
       {/* Main Content */}
@@ -243,11 +306,11 @@ const PublicationView: React.FC = () => {
         {/* Publication Header Section */}
         <div className="publication-header">
           <div className="publication-image">
-            <img src={imgFrame69} alt="Publication cover" />
+            <img src={anthology.photo_url || imgFrame69} alt="Publication cover" />
           </div>
           <div className="publication-info">
             <div className="publication-title-section">
-              <h1 className="publication-title">Untitled Publication</h1>
+              <h1 className="publication-title">{anthology.title}</h1>
               <p className="publication-author">Author Name(s)</p>
               <div className="publication-description">
                 <p className="description-text">
@@ -273,22 +336,15 @@ const PublicationView: React.FC = () => {
 
             <MetadataRow
               label="Genre"
-              tags={[
-                { label: 'Fantasy', className: 'tag-fantasy' },
-                { label: 'Science Fiction', className: 'tag-science-fiction' },
-                { label: 'Mystery', className: 'tag-mystery' },
-              ]}
+              tags={genreTags.length > 0 ? genreTags : [{ label: 'Empty', className: 'tag-neutral' }]}
             />
 
             <MetadataRow
               label="Theme"
-              tags={[
-                { label: 'Short Stories', className: 'tag-neutral' },
-                { label: 'Creative Writing', className: 'tag-neutral' },
-              ]}
+              tags={themeTags.length > 0 ? themeTags : [{ label: 'Empty', className: 'tag-neutral' }]}
             />
 
-            <MetadataRowSingle label="Program" value="YLAB" />
+            <MetadataRowSingle label="Program" value={programValue} />
             <MetadataRowSingle label="Publishing Permission" value="All" />
           </div>
         </div>
