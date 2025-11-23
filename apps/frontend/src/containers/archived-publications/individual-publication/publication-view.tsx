@@ -161,6 +161,8 @@ const assets = [
 const mockAnthology: Anthology = {
   id: 0,
   title: 'Untitled Publication (Mock)',
+  subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+  byline: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
   description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   published_year: 2025,
@@ -173,6 +175,23 @@ const mockAnthology: Anthology = {
   theme: 'Short Stories, Creative Writing',
   isbn: '979-8-88694-087-9',
   shopify_url: 'https://example.com',
+  praise_quotes: '"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."',
+  foreword_author: 'Agnes Ugoji',
+  age_category: '9-12',
+  dimensions: '7" x 7"',
+  binding_type: 'Perfect Bound',
+  page_count: 132,
+  print_run: 500,
+  printed_by: 'Marquis',
+  number_of_students: 53,
+  printing_cost: '$2,906.40',
+  weight: '6.2 oz / 176 g',
+  inventory_locations: {
+    'Devs/Comms Office (1865 Columbus)': 79,
+    'The Hub (1989 Columbus)': 400,
+    'Tutoring Center (3035 Office)': 0,
+    Archived: 3,
+  },
 };
 
 const PublicationView: React.FC = () => {
@@ -247,11 +266,11 @@ const PublicationView: React.FC = () => {
   const publicationDetails = [
     {
       label: 'Subtitle',
-      value: 'Empty', // Not in anthology entity
+      value: anthology.subtitle || 'Empty',
     },
     {
       label: 'Byline',
-      value: 'Empty', // Not in anthology entity
+      value: anthology.byline || 'Empty',
     },
     {
       label: 'Theme',
@@ -259,33 +278,34 @@ const PublicationView: React.FC = () => {
     },
     {
       label: 'Praise/Pull Quotes',
-      value: 'Empty', // Not in anthology entity
+      value: anthology.praise_quotes || 'Empty',
     },
   ];
 
   const productionDetails = [
-    { label: 'Foreword Author', value: 'Empty' },
-    { label: 'Age Category', value: 'Empty' },
+    { label: 'Foreword Author', value: anthology.foreword_author || 'Empty' },
+    { label: 'Age Category', value: anthology.age_category || 'Empty' },
     { label: 'Pub Level', value: anthology.pub_level || 'Empty' },
     { label: 'Pub Date', value: anthology.published_year?.toString() || 'Empty' },
     { label: 'ISBN', value: anthology.isbn || 'Empty' },
-    { label: 'Dimensions', value: 'Empty' },
-    { label: 'Binding Type', value: 'Empty' },
-    { label: 'Page Count', value: 'Empty' },
-    { label: 'Print Run', value: 'Empty' },
-    { label: 'Printed By', value: 'Empty' },
-    { label: 'Number of Students', value: 'Empty' },
-    { label: 'Printing Cost', value: 'Empty' },
-    { label: 'Weight', value: 'Empty' },
+    { label: 'Dimensions', value: anthology.dimensions || 'Empty' },
+    { label: 'Binding Type', value: anthology.binding_type || 'Empty' },
+    { label: 'Page Count', value: anthology.page_count?.toString() || 'Empty' },
+    { label: 'Print Run', value: anthology.print_run?.toString() || 'Empty' },
+    { label: 'Printed By', value: anthology.printed_by || 'Empty' },
+    { label: 'Number of Students', value: anthology.number_of_students?.toString() || 'Empty' },
+    { label: 'Printing Cost', value: anthology.printing_cost || 'Empty' },
+    { label: 'Weight', value: anthology.weight || 'Empty' },
   ];
 
   const inventoryItems = [
     { label: 'Total Inventory', value: anthology.inventory?.toString() || '0' },
-    // Placeholders for locations not yet in backend
-    { label: 'Devs/Comms Office (1865 Columbus)', value: 'Empty' },
-    { label: 'The Hub (1989 Columbus)', value: 'Empty' },
-    { label: 'Tutoring Center (3035 Office)', value: 'Empty' },
-    { label: 'Archived', value: 'Empty' },
+    ...Object.entries(anthology.inventory_locations || {}).map(
+      ([location, count]) => ({
+        label: location,
+        value: count.toString(),
+      })
+    ),
   ];
 
   return (
