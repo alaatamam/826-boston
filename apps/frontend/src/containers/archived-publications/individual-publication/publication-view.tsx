@@ -175,7 +175,8 @@ const mockAnthology: Anthology = {
   theme: 'Short Stories, Creative Writing',
   isbn: '979-8-88694-087-9',
   shopify_url: 'https://example.com',
-  praise_quotes: '"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."',
+  praise_quotes:
+    '"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."',
   foreword_author: 'Agnes Ugoji',
   age_category: '9-12',
   dimensions: '7" x 7"',
@@ -235,15 +236,16 @@ const PublicationView: React.FC = () => {
   };
 
   if (loading) return <div className="publication-view">Loading...</div>;
-  if (!anthology) return <div className="publication-view">No anthology found</div>;
+  if (!anthology)
+    return <div className="publication-view">No anthology found</div>;
 
   const fullDescription = anthology.description || 'No description available.';
 
   // Helper to parse comma separated strings or arrays
   const parseTags = (value?: string | string[]) => {
-      if (Array.isArray(value)) return value;
-      if (typeof value === 'string') return value.split(',').map(s => s.trim());
-      return [];
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string') return value.split(',').map((s) => s.trim());
+    return [];
   };
 
   const getTagClass = (label: string) => {
@@ -259,9 +261,17 @@ const PublicationView: React.FC = () => {
     }
   };
 
-  const genreTags = parseTags(anthology.genre).map(g => ({ label: g, className: getTagClass(g) }));
-  const themeTags = parseTags(anthology.theme).map(t => ({ label: t, className: 'tag-neutral' }));
-  const programValue = Array.isArray(anthology.programs) ? anthology.programs.join(', ') : anthology.programs || 'Empty';
+  const genreTags = parseTags(anthology.genre).map((g) => ({
+    label: g,
+    className: getTagClass(g),
+  }));
+  const themeTags = parseTags(anthology.theme).map((t) => ({
+    label: t,
+    className: 'tag-neutral',
+  }));
+  const programValue = Array.isArray(anthology.programs)
+    ? anthology.programs.join(', ')
+    : anthology.programs || 'Empty';
 
   const publicationDetails = [
     {
@@ -286,14 +296,20 @@ const PublicationView: React.FC = () => {
     { label: 'Foreword Author', value: anthology.foreword_author || 'Empty' },
     { label: 'Age Category', value: anthology.age_category || 'Empty' },
     { label: 'Pub Level', value: anthology.pub_level || 'Empty' },
-    { label: 'Pub Date', value: anthology.published_year?.toString() || 'Empty' },
+    {
+      label: 'Pub Date',
+      value: anthology.published_year?.toString() || 'Empty',
+    },
     { label: 'ISBN', value: anthology.isbn || 'Empty' },
     { label: 'Dimensions', value: anthology.dimensions || 'Empty' },
     { label: 'Binding Type', value: anthology.binding_type || 'Empty' },
     { label: 'Page Count', value: anthology.page_count?.toString() || 'Empty' },
     { label: 'Print Run', value: anthology.print_run?.toString() || 'Empty' },
     { label: 'Printed By', value: anthology.printed_by || 'Empty' },
-    { label: 'Number of Students', value: anthology.number_of_students?.toString() || 'Empty' },
+    {
+      label: 'Number of Students',
+      value: anthology.number_of_students?.toString() || 'Empty',
+    },
     { label: 'Printing Cost', value: anthology.printing_cost || 'Empty' },
     { label: 'Weight', value: anthology.weight || 'Empty' },
   ];
@@ -304,7 +320,7 @@ const PublicationView: React.FC = () => {
       ([location, count]) => ({
         label: location,
         value: count.toString(),
-      })
+      }),
     ),
   ];
 
@@ -326,7 +342,10 @@ const PublicationView: React.FC = () => {
         {/* Publication Header Section */}
         <div className="publication-header">
           <div className="publication-image">
-            <img src={anthology.photo_url || imgFrame69} alt="Publication cover" />
+            <img
+              src={anthology.photo_url || imgFrame69}
+              alt="Publication cover"
+            />
           </div>
           <div className="publication-info">
             <div className="publication-title-section">
@@ -356,12 +375,20 @@ const PublicationView: React.FC = () => {
 
             <MetadataRow
               label="Genre"
-              tags={genreTags.length > 0 ? genreTags : [{ label: 'Empty', className: 'tag-neutral' }]}
+              tags={
+                genreTags.length > 0
+                  ? genreTags
+                  : [{ label: 'Empty', className: 'tag-neutral' }]
+              }
             />
 
             <MetadataRow
               label="Theme"
-              tags={themeTags.length > 0 ? themeTags : [{ label: 'Empty', className: 'tag-neutral' }]}
+              tags={
+                themeTags.length > 0
+                  ? themeTags
+                  : [{ label: 'Empty', className: 'tag-neutral' }]
+              }
             />
 
             <MetadataRowSingle label="Program" value={programValue} />

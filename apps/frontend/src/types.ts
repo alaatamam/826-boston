@@ -44,4 +44,3 @@ export interface Anthology {
   // Inventory breakdown locations
   inventory_locations?: Record<string, number>;
 }
-
