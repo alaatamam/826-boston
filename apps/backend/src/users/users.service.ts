@@ -14,6 +14,7 @@ export class UsersService {
     firstName: string,
     lastName: string,
     status: Status = Status.STANDARD,
+    publishingName?: string,
   ) {
     const userId = (await this.repo.count()) + 1;
     const user = this.repo.create({
@@ -22,6 +23,7 @@ export class UsersService {
       firstName,
       lastName,
       email,
+      publishingName,
     });
 
     return this.repo.save(user);

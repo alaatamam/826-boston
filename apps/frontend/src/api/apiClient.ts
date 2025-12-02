@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
+import { Anthology } from '../types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -12,6 +13,10 @@ export class ApiClient {
 
   public async getHello(): Promise<string> {
     return this.get('/api') as Promise<string>;
+  }
+
+  public async getAnthology(id: string | number): Promise<Anthology> {
+    return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
   }
 
   private async get(path: string): Promise<unknown> {

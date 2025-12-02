@@ -6,6 +6,7 @@ import Root from '@containers/root';
 import NotFound from '@containers/404';
 import Test from '@containers/test';
 import ArchivedPublications from '@containers/archived-publications';
+import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: '/test',
     element: <Test />,
+  },
+  {
+    path: '/publication/:id?',
+    element: <PublicationView />,
   },
 ]);
 

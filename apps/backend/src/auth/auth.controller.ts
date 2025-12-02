@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -16,10 +9,10 @@ import { DeleteUserDto } from './dtos/delete-user.dto';
 import { User } from '../users/user.entity';
 import { SignInResponseDto } from './dtos/sign-in-response.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { ConfirmPasswordDto } from './dtos/confirm-password.dto';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Status } from '../users/types';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,6 +35,8 @@ export class AuthController {
       signUpDto.email,
       signUpDto.firstName,
       signUpDto.lastName,
+      Status.STANDARD,
+      signUpDto.publishingName,
     );
 
     return user;
