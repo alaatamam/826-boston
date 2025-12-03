@@ -1,7 +1,7 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import './root.css';
+import './styles.css';
 
-const Root: React.FC = () => {
+export default function Root() {
   return (
     <div className="root-shell">
       {/* Left sidebar */}
@@ -73,11 +73,9 @@ const Root: React.FC = () => {
 
       {/* Main content area */}
       <main className="root-main">
-        {/* Child routes (like Archived) render here */}
+        {/* Whatever route we’re on (e.g., Archived) renders here */}
         <Outlet />
       </main>
     </div>
   );
-};
-
-export default Root;
+}
