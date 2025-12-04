@@ -76,7 +76,7 @@ const Root: React.FC = () => {
                 <ul className="sidebar-subnav">
                   <li>
                     <NavLink
-                      to="/library/publication/archived"
+                      to="/library/publication/all"
                       className={({ isActive }) =>
                         'sidebar-subnav-link' +
                         (isActive ? ' sidebar-subnav-link--active' : '')
@@ -98,7 +98,7 @@ const Root: React.FC = () => {
                   </li>
                   <li>
                     <NavLink
-                      to="/library/publication/archive"
+                      to="/library/publication/archived"
                       className={({ isActive }) =>
                         'sidebar-subnav-link' +
                         (isActive ? ' sidebar-subnav-link--active' : '')
