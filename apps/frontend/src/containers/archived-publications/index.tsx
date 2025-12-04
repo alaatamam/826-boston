@@ -209,15 +209,6 @@ export default function ArchivedPublications() {
               </button>
             </div>
           </div>
-        ) : (
-          filteredArchived.map((pub) => (
-            <button
-              key={pub.id}
-              className="archive-card"
-              type="button"
-              onClick={() => (window.location.href = `/publication/${pub.id}`)}
-            >
-              <div className="archive-card-body" />
 
           {/* Publication Cards Grid */}
           <div className="publication-cards-grid">
@@ -226,7 +217,9 @@ export default function ArchivedPublications() {
                 key={pub.id}
                 type="button"
                 className="publication-card"
-                onClick={() => setSelected(pub)}
+                onClick={() =>
+                  (window.location.href = `/publication/${pub.id}`)
+                }
               >
                 <div className="publication-card-image">
                   <img
@@ -269,20 +262,12 @@ export default function ArchivedPublications() {
         </div>
       </section>
 
-                <span className="archive-card-menu">•••</span>
-              </div>
-            </button>
-          ))
-        )}
-      </div>
-
-      {/* {selected && (
       {/* Modal */}
-      {selected && (
+      {/* {selected && (
         <div
           className="archive-modal-backdrop"
-          onClick={() => window.location.href = `/publication/${selected.id}`}
-          >
+          onClick={() => setSelected(null)}
+        >
           <div className="archive-modal" onClick={(e) => e.stopPropagation()}>
             <h2 className="archive-modal-title">{selected.title}</h2>
             <div className="archive-modal-content">
