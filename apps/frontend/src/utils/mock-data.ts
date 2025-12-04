@@ -54,7 +54,7 @@ export const STATIC_ARCHIVED: Anthology[] = [
     age_category:
       'Chapter Books (Ages 6–10), Early Reader Books (Ages 5–8), Middle Grade Books (Ages 8–13), Young Adult Books (Ages 13–18)',
     genre:
-      'Advice, science fiction, fantasy, recipes, humor, poetry, short stories, fiction, non-fiction, essays',
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
     theme: 'Creative Writing, Short Stories',
     isbn: '979-8-88694-056-5',
     shopify_url: 'https://826boston.org',
@@ -140,6 +140,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2022,
     status: 'archived',
     authors: ['A. Lee', 'M. Torres'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 4,
@@ -147,6 +149,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2023,
     status: 'archived',
     authors: ['Jamal Wright'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 5,
@@ -154,6 +158,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2021,
     status: 'archived',
     authors: ['A. Lee'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 6,
@@ -161,6 +167,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2020,
     status: 'archived',
     authors: ['Student Contributors'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 7,
@@ -168,6 +176,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2019,
     status: 'archived',
     authors: ['K. Chen', 'R. Patel', 'S. Johnson'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 8,
@@ -175,6 +185,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2021,
     status: 'archived',
     authors: ['Community Writers'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 9,
@@ -182,6 +194,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2022,
     status: 'archived',
     authors: ['M. Williams', 'D. Brown'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
   {
     id: 10,
@@ -189,6 +203,8 @@ export const STATIC_ARCHIVED: Anthology[] = [
     published_year: 2023,
     status: 'archived',
     authors: ['826 Boston Students'],
+    genre:
+      'Advice, Science Fiction, Fantasy, Recipes, Humor, Poetry, Short Stories, Fiction, Non-Fiction, Essays',
   },
 ];
 
