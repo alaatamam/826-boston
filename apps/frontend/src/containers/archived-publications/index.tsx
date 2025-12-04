@@ -15,94 +15,66 @@ interface Anthology {
   published_year: number;
   status: string;
   updated_at?: string;
-  author?: string;
+  authors?: string[];
 }
 
 // Static fallback data
 const STATIC_ARCHIVED: Anthology[] = [
   {
     id: 1,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Student Voices Vol. 1',
+    published_year: 2022,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['A. Lee', 'M. Torres'],
   },
   {
     id: 2,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: '826 Boston Anthology 2023',
+    published_year: 2023,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['Jamal Wright'],
   },
   {
     id: 3,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Neighborhood Stories',
+    published_year: 2021,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['A. Lee'],
   },
   {
     id: 4,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Poetry from the Classroom',
+    published_year: 2020,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['Student Contributors'],
   },
   {
     id: 5,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Young Writers Showcase',
+    published_year: 2019,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['K. Chen', 'R. Patel', 'S. Johnson'],
   },
   {
     id: 6,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Stories from Roxbury',
+    published_year: 2021,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['Community Writers'],
   },
   {
     id: 7,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Creative Expressions 2022',
+    published_year: 2022,
     status: 'archived',
-    author: 'Author Name',
+    authors: ['M. Williams', 'D. Brown'],
   },
   {
     id: 8,
-    title: 'Untitled Publication',
-    published_year: 2025,
+    title: 'Voices of Tomorrow',
+    published_year: 2023,
     status: 'archived',
-    author: 'Author Name',
-  },
-  {
-    id: 9,
-    title: 'Untitled Publication',
-    published_year: 2025,
-    status: 'archived',
-    author: 'Author Name',
-  },
-  {
-    id: 10,
-    title: 'Untitled Publication',
-    published_year: 2025,
-    status: 'archived',
-    author: 'Author Name',
-  },
-  {
-    id: 11,
-    title: 'Untitled Publication',
-    published_year: 2025,
-    status: 'archived',
-    author: 'Author Name',
-  },
-  {
-    id: 12,
-    title: 'Untitled Publication',
-    published_year: 2025,
-    status: 'archived',
-    author: 'Author Name',
+    authors: ['826 Boston Students'],
   },
 ];
 
@@ -124,6 +96,7 @@ const RECENTLY_EDITED: Anthology[] = [
     title: 'Untitled Publication',
     published_year: 2025,
     status: 'archived',
+    authors: ['Student Contributors'],
   },
 ];
 
@@ -150,9 +123,13 @@ export default function ArchivedPublications() {
       });
   }, []);
 
-  const filteredPublications = archived.filter((pub) =>
-    pub.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredPublications = archived.filter((pub) => {
+    const query = searchQuery.toLowerCase();
+    const titleMatch = pub.title.toLowerCase().includes(query);
+    const authors = pub.authors || [];
+    const authorMatch = authors.some((a) => a.toLowerCase().includes(query));
+    return titleMatch || authorMatch;
+  });
 
   return (
     <div className="archive-wrapper">
@@ -253,7 +230,7 @@ export default function ArchivedPublications() {
                   <div className="publication-card-details">
                     <h3 className="publication-card-title">{pub.title}</h3>
                     <p className="publication-card-author">
-                      {pub.author || 'Author Name'}
+                      {pub.authors?.join(', ') || 'Author Name'}
                     </p>
                     <div className="publication-card-meta">
                       <span className="publication-card-modified">
@@ -295,9 +272,17 @@ export default function ArchivedPublications() {
               <p>
                 <strong>Year:</strong> {selected.published_year ?? '—'}
               </p>
+
               <p>
                 <strong>Status:</strong> {selected.status}
               </p>
+
+              {selected.authors && selected.authors.length > 0 && (
+                <p>
+                  <strong>Author(s):</strong> {selected.authors.join(', ')}
+                </p>
+              )}
+
               <p>
                 This is a placeholder pop-up interaction. Additional details and
                 actions will be added in future tickets.

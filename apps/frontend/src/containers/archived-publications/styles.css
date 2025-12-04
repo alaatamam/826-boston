@@ -422,6 +422,13 @@
   background-color: var(--neutral-300);
 }
 
+/* Authors class from main for potential future use */
+.archive-card-authors {
+  font-size: 0.78rem;
+  color: #555;
+  margin-bottom: 2px;
+}
+
 @keyframes modalFadeIn {
   from {
     opacity: 0;
