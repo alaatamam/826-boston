@@ -113,7 +113,7 @@ export default function ArchivedPublications() {
               key={pub.id}
               className="archive-card"
               type="button"
-              onClick={() => setSelected(pub)}
+              onClick={() => (window.location.href = `/publication/${pub.id}`)}
             >
               <div className="archive-card-body" />
 
@@ -143,12 +143,11 @@ export default function ArchivedPublications() {
         )}
       </div>
 
-      {/* Modal pop-up */}
-      {selected && (
+      {/* {selected && (
         <div
           className="archive-modal-backdrop"
-          onClick={() => setSelected(null)}
-        >
+          onClick={() => window.location.href = `/publication/${selected.id}`}
+          >
           <div className="archive-modal" onClick={(e) => e.stopPropagation()}>
             <h2 className="archive-modal-title">{selected.title}</h2>
 
@@ -182,7 +181,7 @@ export default function ArchivedPublications() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
