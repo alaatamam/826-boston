@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import './styles.css';
 import apiClient from '@api/apiClient';
 import Root from '@containers/root';
 import NotFound from '@containers/404';
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <NotFound />,
     children: [
+      {
+        index: true,
+        element: <ArchivedPublications />,
+      },
       {
         path: 'library/publication/archived',
         element: <ArchivedPublications />,

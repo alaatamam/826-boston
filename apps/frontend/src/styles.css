@@ -1,1 +1,52 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================
+   Global Styles - 826 Boston
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@400;600;700&display=swap');
+
+/* CSS Variables - Design Tokens from Figma */
+:root {
+  /* Neutral Palette */
+  --neutral-100: #fdfcfb;
+  --neutral-150: #faf6f3;
+  --neutral-200: #f9f6f5;
+  --neutral-300: #cac3c0;
+  --neutral-400: #938b88;
+  --neutral-600: #3b3330;
+
+  /* Accent */
+  --accent-500: #ec9209;
+
+  /* Typography */
+  --font-heading: 'Roboto', sans-serif;
+  --font-body: 'Open Sans', sans-serif;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--neutral-600);
+  background-color: var(--neutral-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* SVG Icons - Global Styling */
+svg {
+  display: block;
+}

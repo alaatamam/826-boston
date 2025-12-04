@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import './styles.css';
 
+// Import SVG icons
+import DocumentIcon from '../../assets/icons/document.svg';
+import SearchIcon from '../../assets/icons/search.svg';
+import ListIcon from '../../assets/icons/list.svg';
+import FilterIcon from '../../assets/icons/filter.svg';
+import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
+import BookmarkIcon from '../../assets/icons/bookmark.svg';
+
 interface Anthology {
   id: number;
   title: string;
@@ -10,7 +18,7 @@ interface Anthology {
   authors?: string[];
 }
 
-// Static fallback data to satisfy "leave static for now"
+// Static fallback data
 const STATIC_ARCHIVED: Anthology[] = [
   {
     id: 1,
@@ -40,6 +48,56 @@ const STATIC_ARCHIVED: Anthology[] = [
     status: 'archived',
     authors: ['Student Contributors'],
   },
+  {
+    id: 5,
+    title: 'Young Writers Showcase',
+    published_year: 2019,
+    status: 'archived',
+    authors: ['K. Chen', 'R. Patel', 'S. Johnson'],
+  },
+  {
+    id: 6,
+    title: 'Stories from Roxbury',
+    published_year: 2021,
+    status: 'archived',
+    authors: ['Community Writers'],
+  },
+  {
+    id: 7,
+    title: 'Creative Expressions 2022',
+    published_year: 2022,
+    status: 'archived',
+    authors: ['M. Williams', 'D. Brown'],
+  },
+  {
+    id: 8,
+    title: 'Voices of Tomorrow',
+    published_year: 2023,
+    status: 'archived',
+    authors: ['826 Boston Students'],
+  },
+];
+
+const RECENTLY_EDITED: Anthology[] = [
+  {
+    id: 101,
+    title: 'Untitled Publication',
+    published_year: 2025,
+    status: 'archived',
+  },
+  {
+    id: 102,
+    title: 'Untitled Publication',
+    published_year: 2025,
+    status: 'archived',
+  },
+  {
+    id: 103,
+    title: 'Untitled Publication',
+    published_year: 2025,
+    status: 'archived',
+    authors: ['Student Contributors'],
+  },
 ];
 
 const MOCK_LAST_MODIFIED = 'October 15, 2025';
@@ -47,7 +105,7 @@ const MOCK_LAST_MODIFIED = 'October 15, 2025';
 export default function ArchivedPublications() {
   const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
   const [selected, setSelected] = useState<Anthology | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/anthologies')
@@ -61,89 +119,148 @@ export default function ArchivedPublications() {
         }
       })
       .catch(() => {
-        // leave STATIC_ARCHIVED if backend not available
         setArchived(STATIC_ARCHIVED);
       });
   }, []);
 
-  // Case-insensitive title + author filtering
-  const filteredArchived = archived.filter((pub) => {
-    const q = searchTerm.trim().toLowerCase();
-    if (!q) return true;
-
-    const titleMatch = pub.title.toLowerCase().includes(q);
-
+  const filteredPublications = archived.filter((pub) => {
+    const query = searchQuery.toLowerCase();
+    const titleMatch = pub.title.toLowerCase().includes(query);
     const authors = pub.authors || [];
-    const authorMatch = authors.some((a) => a.toLowerCase().includes(q));
-
+    const authorMatch = authors.some((a) => a.toLowerCase().includes(query));
     return titleMatch || authorMatch;
   });
 
   return (
     <div className="archive-wrapper">
-      {/* Header: title + search bar */}
-      <div className="archive-toolbar">
-        <h1 className="archive-title">All Publications</h1>
-
-        <div className="archive-search-wrapper">
-          <input
-            className="archive-search-input"
-            placeholder="Search by title or author..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button className="archive-search-icon" disabled>
-            🔍
-          </button>
-          <button className="archive-filter-icon" disabled>
-            ☷
-          </button>
-        </div>
-      </div>
-
-      {/* Scrollable card grid */}
-      <div className="archive-grid">
-        {filteredArchived.length === 0 ? (
-          <div className="archive-empty">
-            No publications match your search.
-          </div>
-        ) : (
-          filteredArchived.map((pub) => (
-            <button
-              key={pub.id}
-              className="archive-card"
-              type="button"
-              onClick={() => setSelected(pub)}
-            >
-              <div className="archive-card-body" />
-
-              <div className="archive-card-footer">
-                <div className="archive-card-footer-text">
-                  <div className="archive-card-title">{pub.title}</div>
-
-                  {/* NEW: Authors / byline on card */}
-                  <div className="archive-card-authors">
-                    {pub.authors && pub.authors.length > 0
-                      ? pub.authors.join(', ')
-                      : 'Byline coming soon'}
+      {/* Recently Edited Section */}
+      <section className="recently-edited-section">
+        <div className="recently-edited-content">
+          <h2 className="recently-edited-title">Recently Edited</h2>
+          <div className="recently-edited-list">
+            {RECENTLY_EDITED.map((pub) => (
+              <div
+                key={pub.id}
+                className="publication-list-item"
+                onClick={() => setSelected(pub)}
+              >
+                <div className="publication-list-item-content">
+                  <div className="publication-list-item-left">
+                    <img
+                      src={DocumentIcon}
+                      alt=""
+                      className="publication-list-icon"
+                    />
+                    <span className="publication-list-title">{pub.title}</span>
                   </div>
-
-                  <div className="archive-card-meta">
-                    Last modified{' '}
-                    {pub.updated_at
-                      ? new Date(pub.updated_at).toLocaleDateString()
-                      : MOCK_LAST_MODIFIED}
+                  <div className="publication-list-item-right">
+                    <span className="publication-list-modified">
+                      Last modified 1 hour ago
+                    </span>
+                    <img
+                      src={MenuDotsIcon}
+                      alt=""
+                      className="publication-list-menu"
+                    />
                   </div>
                 </div>
-
-                <span className="archive-card-menu">•••</span>
               </div>
-            </button>
-          ))
-        )}
-      </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Modal pop-up */}
+      {/* All Publications Section */}
+      <section className="all-publications-section">
+        <div className="all-publications-content">
+          {/* Search Header */}
+          <div className="publication-search-header">
+            <h2 className="publication-search-title">All Publications</h2>
+            <div className="publication-search-controls">
+              <div className="publication-search-input-wrapper">
+                <div className="publication-search-input-content">
+                  <input
+                    type="text"
+                    className="publication-search-input"
+                    placeholder="Search for a title..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <img
+                    src={SearchIcon}
+                    alt=""
+                    className="publication-search-icon"
+                  />
+                </div>
+              </div>
+              <button type="button" className="publication-filter-btn">
+                <img
+                  src={ListIcon}
+                  alt=""
+                  className="publication-filter-icon"
+                />
+              </button>
+              <button type="button" className="publication-filter-btn">
+                <img
+                  src={FilterIcon}
+                  alt=""
+                  className="publication-filter-icon"
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Publication Cards Grid */}
+          <div className="publication-cards-grid">
+            {filteredPublications.map((pub) => (
+              <button
+                key={pub.id}
+                type="button"
+                className="publication-card"
+                onClick={() => setSelected(pub)}
+              >
+                <div className="publication-card-image">
+                  <img
+                    src={BookmarkIcon}
+                    alt=""
+                    className="publication-card-bookmark"
+                  />
+                </div>
+                <div className="publication-card-info">
+                  <div className="publication-card-details">
+                    <h3 className="publication-card-title">{pub.title}</h3>
+                    <p className="publication-card-author">
+                      {pub.authors?.join(', ') || 'Author Name'}
+                    </p>
+                    <div className="publication-card-meta">
+                      <span className="publication-card-modified">
+                        Last modified{' '}
+                        {pub.updated_at
+                          ? new Date(pub.updated_at).toLocaleDateString(
+                              'en-US',
+                              {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric',
+                              },
+                            )
+                          : MOCK_LAST_MODIFIED}
+                      </span>
+                      <img
+                        src={MenuDotsIcon}
+                        alt=""
+                        className="publication-card-menu"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Modal */}
       {selected && (
         <div
           className="archive-modal-backdrop"
@@ -151,7 +268,6 @@ export default function ArchivedPublications() {
         >
           <div className="archive-modal" onClick={(e) => e.stopPropagation()}>
             <h2 className="archive-modal-title">{selected.title}</h2>
-
             <div className="archive-modal-content">
               <p>
                 <strong>Year:</strong> {selected.published_year ?? '—'}
@@ -168,11 +284,10 @@ export default function ArchivedPublications() {
               )}
 
               <p>
-                This is a placeholder pop-up interaction to satisfy the
-                acceptance criteria. More details will be added later.
+                This is a placeholder pop-up interaction. Additional details and
+                actions will be added in future tickets.
               </p>
             </div>
-
             <button
               type="button"
               className="archive-modal-close"
