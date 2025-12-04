@@ -4,6 +4,7 @@ import {
   STATIC_ARCHIVED,
   RECENTLY_EDITED,
   MOCK_LAST_MODIFIED,
+  Anthology,
 } from '@utils/mock-data';
 
 // Import SVG icons
@@ -14,18 +15,9 @@ import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
 
-interface Anthology {
-  id: number;
-  title: string;
-  published_year: number;
-  status: string;
-  updated_at?: string;
-  authors?: string[];
-}
-
 export default function ArchivedPublications() {
   const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
-  const [selected, setSelected] = useState<Anthology | null>(null);
+  // const [selected, setSelected] = useState<Anthology | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -63,7 +55,7 @@ export default function ArchivedPublications() {
               <div
                 key={pub.id}
                 className="publication-list-item"
-                onClick={() => setSelected(pub)}
+                // onClick={() => setSelected(pub)}
               >
                 <div className="publication-list-item-content">
                   <div className="publication-list-item-left">
@@ -143,6 +135,13 @@ export default function ArchivedPublications() {
                 }
               >
                 <div className="publication-card-image">
+                  <img
+                    src={
+                      pub.photo_url || 'src/assets/images/covers/NoCover.png'
+                    }
+                    alt={pub.title}
+                    className="publication-card-cover"
+                  />
                   <img
                     src={BookmarkIcon}
                     alt=""
