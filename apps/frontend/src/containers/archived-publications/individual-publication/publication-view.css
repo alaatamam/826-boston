@@ -71,7 +71,7 @@
 .publication-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: 50% 50%;
 }
 
@@ -194,8 +194,10 @@
 
 .tag-group {
   display: flex;
+  flex-wrap: nowrap;
   gap: 7px;
   align-items: center;
+  min-width: max-content;
 }
 
 .tag {
@@ -210,7 +212,8 @@
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 12px;
-  line-height: normal;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tag-fantasy {

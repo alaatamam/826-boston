@@ -23,15 +23,15 @@ const router = createBrowserRouter([
         path: 'library/publication/archived',
         element: <ArchivedPublications />,
       },
+      {
+        path: '/publication/:id?',
+        element: <PublicationView />,
+      },
     ],
   },
   {
     path: '/test',
     element: <Test />,
-  },
-  {
-    path: '/publication/:id?',
-    element: <PublicationView />,
   },
 ]);
 

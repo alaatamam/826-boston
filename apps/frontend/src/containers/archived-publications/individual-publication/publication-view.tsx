@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
+import { STATIC_ARCHIVED } from '@utils/mock-data';
 import { Anthology, AnthologyStatus, AnthologyPubLevel } from '../../../types';
 import './publication-view.css';
 
@@ -218,15 +219,24 @@ const PublicationView: React.FC = () => {
         })
         .catch((err) => {
           console.error(err);
-          // Fallback to mock on error for demo purposes
-          console.log('Using mock anthology due to API error');
-          setAnthology(mockAnthology);
+          // Fallback to mock data based on ID
+          const mockPub = STATIC_ARCHIVED.find(
+            (pub) => pub.id === parseInt(id || '0'),
+          );
+          if (mockPub) {
+            setAnthology(mockPub as Anthology);
+          } else {
+            setAnthology(mockAnthology);
+          }
           setLoading(false);
         });
     } else {
       // Fallback for development if no ID is present
+      const mockPub = STATIC_ARCHIVED.find(
+        (pub) => pub.id === parseInt(id || '0'),
+      );
       console.log('Using mock anthology (no ID)');
-      setAnthology(mockAnthology);
+      setAnthology(mockPub ? (mockPub as Anthology) : mockAnthology);
       setLoading(false);
     }
   }, [id]);
