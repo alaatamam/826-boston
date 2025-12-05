@@ -137,7 +137,7 @@ export default function ArchivedPublications() {
                 <div className="publication-card-image">
                   <img
                     src={
-                      pub.photo_url || 'src/assets/images/covers/NoCover.png'
+                      pub.photo_url || 'src/assets/images/covers/booktemp.avif'
                     }
                     alt={pub.title}
                     className="publication-card-cover"
