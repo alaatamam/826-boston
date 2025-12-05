@@ -217,7 +217,9 @@ export default function ArchivedPublications() {
                 key={pub.id}
                 type="button"
                 className="publication-card"
-                onClick={() => setSelected(pub)}
+                onClick={() =>
+                  (window.location.href = `/publication/${pub.id}`)
+                }
               >
                 <div className="publication-card-image">
                   <img
@@ -261,7 +263,7 @@ export default function ArchivedPublications() {
       </section>
 
       {/* Modal */}
-      {selected && (
+      {/* {selected && (
         <div
           className="archive-modal-backdrop"
           onClick={() => setSelected(null)}
@@ -297,7 +299,7 @@ export default function ArchivedPublications() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
