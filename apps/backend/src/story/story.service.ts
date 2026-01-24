@@ -4,13 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Story } from './story.entity';
 import { AnthologyService } from '../anthology/anthology.service';
+import { Anthology } from '../anthology/anthology.entity';
 
 @Injectable()
 export class StoryService {
-  constructor(
-    @InjectRepository(Story) private repo: Repository<Story>,
-    private anthologyService: AnthologyService,
-  ) {}
+  constructor(@InjectRepository(Story) private repo: Repository<Story>) {}
 
   findOne(id: number) {
     if (!id) {
@@ -60,23 +58,24 @@ export class StoryService {
 
   async createStory(
     title: string,
-    author: string,
-    student_bio?: string,
+    anthologyId: number,
+    authorId: number,
+    studentBio?: string,
     description?: string,
     genre?: string,
     theme?: string,
-    anthology_id?: number,
   ): Promise<Story> {
+    // TODO: security concern for not randomizing the primary key
     const storyId = (await this.repo.count()) + 1;
     const story = this.repo.create({
       id: storyId,
       title,
-      author,
-      student_bio,
+      studentBio,
       description,
       genre,
       theme,
-      anthology_id,
+      author: { id: authorId },
+      anthology: { id: anthologyId },
     });
 
     await this.repo.save(story);

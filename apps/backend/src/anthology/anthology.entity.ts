@@ -1,10 +1,20 @@
-import { Entity, Column, IntegerType } from 'typeorm';
+import {
+  Entity,
+  Column,
+  IntegerType,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel } from './types';
 
+import { Story } from '../story/story.entity';
+import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
+
 @Entity()
 export class Anthology {
-  @Column({ primary: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -13,14 +23,11 @@ export class Anthology {
   @Column()
   description: string;
 
-  @Column()
-  published_year: IntegerType;
+  @Column({ type: 'int' })
+  published_year: number;
 
   @Column({ nullable: true })
-  programs?: string[] | string;
-
-  @Column({ nullable: true })
-  inventory?: IntegerType;
+  programs?: string[];
 
   @Column()
   status: AnthologyStatus;
@@ -32,18 +39,14 @@ export class Anthology {
   photo_url: string;
 
   @Column({ nullable: true })
-  genre: string;
-
-  @Column({ nullable: true })
-  theme: string;
-
-  @Column({ nullable: true })
   isbn: string;
 
   @Column({ nullable: true })
   shopify_url: string;
 
-  // TODO once Library is implemented
-  // @Column()
-  // library_id:
+  @OneToMany(() => Story, (story) => story.anthology)
+  stories: Story[];
+
+  @OneToMany(() => InventoryHolding, (ih) => ih.anthology)
+  holdings: InventoryHolding[];
 }
