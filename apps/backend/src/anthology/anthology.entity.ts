@@ -26,7 +26,7 @@ export class Anthology {
   @Column({ type: 'int' })
   published_year: number;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   programs?: string[];
 
   @Column()
